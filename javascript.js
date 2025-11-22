@@ -14,18 +14,14 @@ function getComputerChoice() {
 }
 
 function getHumanChoice() {
-    let playerChoice = parseInt(
-        prompt(
-            "Input a number between 0 and 2 \n0 = Rock, 1 = Paper, 2 = Scissors"
-        )
-    );
+    let playerChoice = prompt("Input your choice: Rock, Paper or Scissors");
 
-    switch (playerChoice) {
-        case 0:
+    switch (playerChoice.toLowerCase()) {
+        case "rock":
             return "Rock";
-        case 1:
+        case "paper":
             return "Paper";
-        case 2:
+        case "scissors":
             return "Scissors";
         default:
             return undefined;
