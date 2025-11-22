@@ -31,3 +31,6 @@ function getHumanChoice() {
             return undefined;
     }
 }
+
+let humanScore = 0;
+let computerScore = 0;
