@@ -13,8 +13,8 @@ function getComputerChoice() {
     }
 }
 
-function getHumanChoice() {
-    let playerChoice = prompt("Input your choice: Rock, Paper or Scissors");
+function getHumanChoice(message) {
+    let playerChoice = prompt(message);
 
     switch (playerChoice.toLowerCase()) {
         case "rock":
@@ -27,9 +27,6 @@ function getHumanChoice() {
             return undefined;
     }
 }
-
-let humanScore = 0;
-let computerScore = 0;
 
 function getResult(humanChoice, computerChoice) {
     if (humanChoice === computerChoice) {
@@ -61,11 +58,49 @@ function getMessage(humanChoice, computerChoice) {
 }
 
 function playRound(humanChoice, computerChoice) {
+    let result = getResult(humanChoice, computerChoice);
     let message = getMessage(humanChoice, computerChoice);
+
     console.log(message);
+
+    return result;
 }
 
-const humanSelection = getHumanChoice();
-const computerSelection = getComputerChoice();
+function printFinalResult(humanScore, computerScore) {
+    let finalResult =
+        humanScore === computerScore
+            ? "You draw!"
+            : humanScore > computerScore
+            ? "You won!"
+            : "You lost!";
 
-playRound(humanSelection, computerSelection);
+    console.log(
+        `Final scores:\tYou [${humanScore}]\tCom [${computerScore}]\n${finalResult}`
+    );
+}
+
+function playGame(rounds) {
+    let humanScore = 0;
+    let computerScore = 0;
+
+    for (let i = 1; i <= rounds; ++i) {
+        let humanSelection = getHumanChoice(
+            `Round ${i}\nInput your choice: Rock, Paper, Scissors`
+        );
+        let computerSelection = getComputerChoice();
+
+        let result = playRound(humanSelection, computerSelection);
+
+        if (result === "Win") ++humanScore;
+        if (result === "Lose") ++computerScore;
+
+        console.log(
+            `Round ${i}\nCurrent scores: \tYou [${humanScore}]\tCom [${computerScore}]`
+        );
+    }
+
+    printFinalResult(humanScore, computerScore);
+}
+
+const numberOfRounds = 5;
+playGame(numberOfRounds);
