@@ -79,28 +79,59 @@ function printFinalResult(humanScore, computerScore) {
     );
 }
 
-function playGame(rounds) {
-    let humanScore = 0;
-    let computerScore = 0;
-
-    for (let i = 1; i <= rounds; ++i) {
-        let humanSelection = getHumanChoice(
-            `Round ${i}\nInput your choice: Rock, Paper, Scissors`
-        );
-        let computerSelection = getComputerChoice();
-
-        let result = playRound(humanSelection, computerSelection);
-
-        if (result === "Win") ++humanScore;
-        if (result === "Lose") ++computerScore;
-
-        console.log(
-            `Round ${i}\nCurrent scores: \tYou [${humanScore}]\tCom [${computerScore}]`
-        );
-    }
-
-    printFinalResult(humanScore, computerScore);
+function playGame() {
+    createGameUI();
 }
 
-const numberOfRounds = 5;
-playGame(numberOfRounds);
+function createGameUI() {
+    const gameContainer = document.querySelector("#game-container");
+    createPara("human-score", "Human Score: 0", gameContainer);
+    createPara("computer-score", "Computer Score: 0", gameContainer);
+    createButton("Rock", gameContainer);
+    createButton("Paper", gameContainer);
+    createButton("Scissors", gameContainer);
+    createPara("result", "", gameContainer);
+}
+
+function createButton(id, parent) {
+    const btn = document.createElement("button");
+    btn.setAttribute("id", id);
+    btn.textContent = id;
+    parent.appendChild(btn);
+}
+
+function createPara(id, text, parent) {
+    const p = document.createElement("p");
+    p.setAttribute("id", id);
+    p.textContent = text;
+    parent.appendChild(p);
+}
+
+function resetGame() {
+    // reset game menu
+    const playButton = document.querySelector("#play-game");
+    playButton.disabled = false;
+
+    // reset game container
+    const gameContainer = document.querySelector("#game-container");
+    while (gameContainer.firstChild) {
+        gameContainer.removeChild(gameContainer.firstChild);
+    }
+}
+
+function changeGameState(e) {
+    const target = e.target;
+
+    switch (target.id) {
+        case "play-game":
+            target.disabled = true;
+            playGame();
+            break;
+        case "reset-game":
+            resetGame();
+            break;
+    }
+}
+
+const gameMenu = document.querySelector("#game-menu");
+gameMenu.addEventListener("click", changeGameState);
