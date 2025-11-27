@@ -13,21 +13,6 @@ function getComputerChoice() {
     }
 }
 
-function getHumanChoice(message) {
-    let playerChoice = prompt(message);
-
-    switch (playerChoice.toLowerCase()) {
-        case "rock":
-            return "Rock";
-        case "paper":
-            return "Paper";
-        case "scissors":
-            return "Scissors";
-        default:
-            return undefined;
-    }
-}
-
 function getResult(humanChoice, computerChoice) {
     if (humanChoice === computerChoice) {
         return "Draw";
@@ -61,30 +46,49 @@ function playRound(humanChoice, computerChoice) {
     let result = getResult(humanChoice, computerChoice);
     let message = getMessage(humanChoice, computerChoice);
 
-    console.log(message);
+    updateResult("result", message);
 
-    return result;
+    if (result === "Win") {
+        ++humanScore;
+        updateResult("human-score", `Human Score: ${humanScore}`);
+    }
+    if (result === "Lose") {
+        ++computerScore;
+        updateResult("computer-score", `Computer Score: ${computerScore}`);
+    }
+
+    if (humanScore === roundsToWin || computerScore === roundsToWin) {
+        printFinalResult(humanScore, computerScore);
+    }
+}
+
+function updateResult(id, message) {
+    const result = document.querySelector(`#${id}`);
+    result.textContent = message;
+}
+
+function hideElement(id) {
+    const elem = document.querySelector(`#${id}`);
+    elem.style.display = "none";
+}
+
+function showElement(id) {
+    const elem = document.querySelector(`#${id}`);
+    elem.style.display = "";
 }
 
 function printFinalResult(humanScore, computerScore) {
-    let finalResult =
-        humanScore === computerScore
-            ? "You draw!"
-            : humanScore > computerScore
-            ? "You won!"
-            : "You lost!";
+    let finalResult = humanScore > computerScore ? "You won the game!" : "You lost the game!";
 
-    console.log(
-        `Final scores:\tYou [${humanScore}]\tCom [${computerScore}]\n${finalResult}`
-    );
-}
-
-function playGame() {
-    createGameUI();
+    hideElement("Rock");
+    hideElement("Paper");
+    hideElement("Scissors");
+    updateResult("result", finalResult);
 }
 
 function createGameUI() {
     const gameContainer = document.querySelector("#game-container");
+    createPara("rounds", `First to ${roundsToWin} rounds wins!`, gameContainer);
     createPara("human-score", "Human Score: 0", gameContainer);
     createPara("computer-score", "Computer Score: 0", gameContainer);
     createButton("Rock", gameContainer);
@@ -108,15 +112,16 @@ function createPara(id, text, parent) {
 }
 
 function resetGame() {
-    // reset game menu
-    const playButton = document.querySelector("#play-game");
-    playButton.disabled = false;
+    humanScore = 0;
+    computerScore = 0;
+    updateResult("human-score", `Human Score: ${humanScore}`);
+    updateResult("computer-score", `Computer Score: ${computerScore}`);
 
-    // reset game container
-    const gameContainer = document.querySelector("#game-container");
-    while (gameContainer.firstChild) {
-        gameContainer.removeChild(gameContainer.firstChild);
-    }
+    showElement("Rock");
+    showElement("Paper");
+    showElement("Scissors");
+
+    updateResult("result", "");
 }
 
 function changeGameState(e) {
@@ -125,7 +130,7 @@ function changeGameState(e) {
     switch (target.id) {
         case "play-game":
             target.disabled = true;
-            playGame();
+            createGameUI();
             break;
         case "reset-game":
             resetGame();
@@ -133,5 +138,24 @@ function changeGameState(e) {
     }
 }
 
+function playerAction(e) {
+    const target = e.target;
+
+    switch (target.id) {
+        case "Rock":
+        case "Paper":
+        case "Scissors":
+            playRound(target.id, getComputerChoice());
+            break;
+    }
+}
+
 const gameMenu = document.querySelector("#game-menu");
 gameMenu.addEventListener("click", changeGameState);
+
+const gameContainer = document.querySelector("#game-container");
+gameContainer.addEventListener("click", playerAction);
+
+let humanScore = 0;
+let computerScore = 0;
+const roundsToWin = 5;
